@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}О нас{% endblock %}
+
+
+{% block body_class %}page-template-default page page-id-8{% endblock %}
+
+
+{% block content %}
+<section id="content">
+	<div class="container">
+	
+		<div class="single_left">
+			<div class="single_post_cont">
+					<div class="single_inside_content">
+						<p><a href="http://dessign.net/shopper-woocommerce-theme/wp-content/uploads/2015/03/light-sky-beach-sand-large.jpg"><img class="alignnone size-full wp-image-226" src="http://dessign.net/shopper-woocommerce-theme/wp-content/uploads/2015/03/light-sky-beach-sand-large.jpg" alt="light-sky-beach-sand-large" width="825" height="550" srcset="http://dessign.net/shopper-woocommerce-theme/wp-content/uploads/2015/03/light-sky-beach-sand-large.jpg 825w, http://dessign.net/shopper-woocommerce-theme/wp-content/uploads/2015/03/light-sky-beach-sand-large-300x200.jpg 300w" sizes="(max-width: 825px) 100vw, 825px" /></a></p>
+						<div class="single_inside_content">
+						<p>Find work that truly matters to you and your life will change. Forget about your traditional recruitment and searching for job. Do what you love.Find work that truly matters to you and your life will change. Forget about your traditional recruitment and searching for job. Do what you love.Find work that truly matters to you and your life will change. Forget about your traditional recruitment and searching for job. Do what you love.Find work that truly matters to you and your life will change. Forget about your traditional recruitment and searching for job. Do what you love.Find work that truly matters to you and your life will change. Forget about your traditional recruitment and searching for job. Do what you love.</p>
+						</div>
+						<p>&nbsp;</p>
+						
+					</div><!--//single_inside_content-->
+					
+					<br /><br />
+					
+															
+					
+					<!--<div class="next_prev_cont">
+						<div class="left">
+							 <a href="http://dessign.net/shopper-woocommerce-theme/my-account/" rel="prev"><i>Previous post</i><br />My Account</a> 
+						</div>
+						<div class="right">
+							 <a href="http://dessign.net/shopper-woocommerce-theme/contact/" rel="next"><i>Next post</i><br />Contact</a> 
+						</div>
+						<div class="clear"></div>
+					</div>--><!--//next_prev_cont-->							
+					
+				            					
+			
+			</div><!--//single_post_cont-->
+		
+		</div><!--//single_left-->
+		
+				<div id="sidebar">
+	
+				<div class="side_box">		
+					<h3 class="side_title">Последние статьи</h3>		
+					<ul>
+						{% for post in recent_posts %}
+						<li>
+							<a href="{% url 'post' post.id %}">{{ post.title }}</a>
+						</li>
+						{% endfor %}
+					</ul>
+				</div>		
+				
+					
+			</div><!--//sidebar-->		
+		<div class="clear"></div>
+		
+	</div><!--//container-->
+</section><!--//content-->
+{% endblock %}
+﻿

@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Оплата{% endblock %}
+
+{% block body_class %}page-template-default page page-id-6 woocommerce-checkout woocommerce-page{% endblock %}
+{% block content %}
+<section id="content">
+	<div class="container">
+		<div class="single_left">
+			<div class="single_post_cont">
+				<div class="single_inside_content">
+					<div class="woocommerce">
+						<form name="checkout" method="post" class="checkout woocommerce-checkout" action="{% url 'checkout:process' %}">
+						{% csrf_token %}
+
+							<div class="col2-set" id="customer_details">
+								<div class="col-1">
+									<div class="woocommerce-billing-fields">
+										<h3>Детали оплаты</h3>
+
+										<div class="woocommerce-billing-fields__field-wrapper">
+										<!-- 	<p class="form-row form-row-first validate-required" id="billing_first_name_field" data-sort="10">
+												<label for="billing_first_name" class="">First name <abbr class="required" title="required">*</abbr></label>
+												<input type="text" class="input-text " name="billing_first_name" id="billing_first_name" placeholder=""  value="" autocomplete="given-name" autofocus="autofocus" />
+											</p>
+											<p class="form-row form-row-last validate-required" id="billing_last_name_field" data-sort="20">
+												<label for="billing_last_name" class="">Last name <abbr class="required" title="required">*</abbr></label>
+												<input type="text" class="input-text " name="billing_last_name" id="billing_last_name" placeholder=""  value="" autocomplete="family-name" />
+											</p> -->
+											<p class="form-row form-row-wide validate-required" id="billing_name_field" data-sort="30">
+												<label for="billing_company" class="">ФИО <abbr class="required" title="required">*</abbr></label>
+												<input type="text" class="input-text " name="name" id="billing_company" placeholder=""  value="" autocomplete="name" required/>
+											</p>
+											
+											
+											<p class="form-row validate-required validate-phone" id="billing_phone_field" data-sort="100">
+												<label for="billing_phone" class="">Телефон <abbr class="required" title="required">*</abbr></label>
+												<input type="tel" class="input-text " name="phone" id="billing_phone" placeholder=""  value="" autocomplete="tel" required />
+											</p>
+											<p class="form-row validate-required validate-email" id="billing_email_field" data-sort="110">
+												<label for="billing_email" class="">E-mail <abbr class="required" title="required">*</abbr></label>
+												<input type="email" class="input-text " name="email" id="billing_email" placeholder=""  value="" autocomplete="email username" required />
+											</p>
+										</div>
+
+									</div>
+
+									<div style="height: 100px"></div>
+								</div>
+
+								<div class="col-2">
+									<div class="woocommerce-shipping-fields"></div>
+									<div class="woocommerce-additional-fields">
+										<h3>Детали доставки</h3>
+
+										<div class="woocommerce-additional-fields__field-wrapper">
+											
+											<p class="form-row form-row-wide address-field validate-required" id="billing_city_field" data-sort="70">
+												<label for="billing_city" class="">Город </label>
+												<select name="city" id="billing_country" class="country_to_state country_select " autocomplete="country">
+													<option value="Санкт-Петербург">Санкт-Петербург</option>
+												</select>
+											</p>
+											<p class="form-row form-row-wide address-field validate-required" id="billing_address_1_field" data-sort="50">
+												<label for="billing_address_1" class="">Адрес <abbr class="required" title="required">*</abbr></label>
+												<input type="text" class="input-text " name="address_1" id="billing_address_1" placeholder="Улица / проспект"  value="" autocomplete="address-line1" required />
+											</p>
+											<p class="form-row form-row-wide address-field" id="billing_address_2_field" data-sort="60">
+												<input type="text" class="input-text " name="address_2" id="billing_address_2" placeholder="Номер дома, корпус, квартира"  value="" autocomplete="address-line2" required/>
+											</p>
+											<p class="form-row notes" id="order_comments_field" data-sort="">
+												<label for="order_comments" class="">Дополнительная информация</label>
+												<textarea name="order_comments" class="input-text " id="order_comments" placeholder="Уточнения к заказу, например подробности доставки"  rows="5" cols="5" style="height: 7em"></textarea>
+											</p>			
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<h3 id="order_review_heading">Ваш заказ</h3>
+
+
+							<div id="order_review" class="woocommerce-checkout-review-order">
+								<table class="shop_table woocommerce-checkout-review-order-table">
+									<thead>
+										<tr>
+											<th class="product-name">Product</th>
+											<th class="product-total">Total</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for item in items %}
+										<tr class="cart_item">
+											<td class="product-name">
+												{{ item.item.title }}&nbsp;<strong class="product-quantity">&times; {{ item.amount }}</strong>
+											</td>
+											<td class="product-total">
+												<span class="woocommerce-Price-amount amount">{{ item.total_price }}<span class="woocommerce-Price-currencySymbol">&#8381;</span></span></td>
+										</tr>
+										{% endfor %}
+									</tbody>
+									<tfoot>
+										<tr class="order-total">
+											<th>Total</th>
+											<td><strong><span class="woocommerce-Price-amount amount">{{ total_price }}<span class="woocommerce-Price-currencySymbol">&#8381;</span></span></strong> </td>
+										</tr>
+									</tfoot>
+								</table>
+								<div id="payment" class="woocommerce-checkout-payment">
+									<ul class="wc_payment_methods payment_methods methods">
+										 <li class="wc_payment_method payment_method_paypal">
+											<input id="payment_method_cheque" type="radio" class="input-radio" name="payment_method" value="paypal" data-order_button_text="" checked/>
+
+											<label for="payment_method_paypal">PayPal</label>
+											<div class="payment_box payment_method_paypal" >
+												<p>Удобная система безналичной оплаты.</p>
+											</div>
+										</li> 
+										<li class="wc_payment_method payment_method_yamoney">
+											<input id="payment_method_yamoney" type="radio" class="input-radio" name="payment_method" value="yamoney"  data-order_button_text="Proceed to PayPal"  />
+
+											<label for="payment_method_yamoney">
+												Яндекс.Деньги&nbsp;<img src="https://studwork.org/img/foot_icon-ya.svg" /><!-- <a href="https://www.paypal.com/us/webapps/mpp/paypal-popup" class="about_paypal" onclick="javascript:window.open('https://www.paypal.com/us/webapps/mpp/paypal-popup','WIPaypal','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=1060, height=700'); return false;">What is PayPal?</a> -->
+											</label>
+											<div class="payment_box payment_method_yamoney" style="display: none;">
+												<ul>
+													 <li style="padding-top: 16px;list-style-type: none;"> <input name="quickpay-form" type="radio" value="AC" checked>Банковская карта</li>
+													<li style="padding-top: 16px;list-style-type: none;"><input name="quickpay-form" type="radio" value="PC">Яндекс.Кошелек</li>
+													<li style="padding-top: 16px;list-style-type: none;"><input name="quickpay-form" type="radio" value="MC">С мобильного телефона</li>
+												</ul>
+											</div>
+										</li>
+									</ul>
+									<div class="form-row place-order">
+										<noscript>
+											Since your browser does not support JavaScript, or it is disabled, please ensure you click the <em>Update Totals</em> button before placing your order. You may be charged more than the amount stated above if you fail to do so.<br/><input type="submit" class="button alt" name="woocommerce_checkout_update_totals" value="Update totals" />
+										</noscript>
+
+										<input type="hidden" name="receiver" value="410015757820973">
+										<input type="hidden" name="targets" value="Оплата покупки на сайте calm-studio.ru">
+										<input type="hidden" name="sum" value="{{ total_price }}">
+										<input type="hidden" name="quickpay-form" value="shop">
+	
+										<input type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="Оформить заказ" data-value="Place order" />
+										
+<!-- 										<input type="hidden" id="_wpnonce" name="_wpnonce" value="cd088a691b" /><input type="hidden" name="_wp_http_referer" value="/shopper-woocommerce-theme/checkout/" /> -->	
+										<!-- <iframe src="https://money.yandex.ru/quickpay/button-widget?targets=%D0%9F%D0%BE%D0%BA%D1%83%D0%BF%D0%BA%D0%B0%20%D0%BD%D0%B0%20%D1%81%D0%B0%D0%B9%D1%82%D0%B0%20calm-studio.ru&default-sum=10&button-text=12&yamoney-payment-type=on&button-size=m&button-color=orange&successURL=&quickpay=small&account=410015757820973&" width="184" height="36" frameborder="0" allowtransparency="true" scrolling="no"></iframe> -->
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div><br /><br />
+			</div>
+		</div>
+
+		<div id="sidebar">
+			<div class="side_box">		
+				<h3 class="side_title">Последние статьи</h3>		
+				<ul>
+					{% for post in recent_posts %}
+					<li>
+						<a href="{% url 'post' post.id %}">{{ post.title }}</a>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>					
+		</div>	
+		<div class="clear"></div>
+	</div><!--//container-->
+</section><!--//content-->
+{% endblock %}
+
+{% block script %}
+<!-- <script type="text/javascript" src="{% static 'js/jquery.finger.min.js' %}"></script> -->
+<!-- <script type='text/javascript' src='//dessign.net/shopper-woocommerce-theme/wp-content/plugins/woocommerce/assets/js/jquery-blockui/jquery.blockUI.min.js?ver=2.70'></script>
+--><!--  <script type='text/javascript'>
+/* <![CDATA[ */
+var wc_checkout_params = {
+	"ajax_url":"\/shopper-woocommerce-theme\/wp-admin\/admin-ajax.php",
+	"wc_ajax_url":"\/shopper-woocommerce-theme\/checkout\/?wc-ajax=%%endpoint%%",
+	"update_order_review_nonce":"c8352a6c2b",
+	"apply_coupon_nonce":"3c0705d06c",
+	"remove_coupon_nonce":"16c0271c0f",
+	"option_guest_checkout":"yes",
+	"checkout_url":"\/shopper-woocommerce-theme\/checkout\/?wc-ajax=checkout",
+	"is_checkout":"1",
+	"debug_mode":"",
+	"i18n_checkout_error":"Error processing checkout. Please try again."
+};
+/* ]]> */
+</script> -->
+<!-- <script type="text/javascript" src="{% static 'js/checkout.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/select2.full.min.js' %}"></script> -->
+<script>
+	$(document).ready(function () {
+		$('.input-radio[value=paypal]').change(function(){
+			$this_content = $(this).siblings('div');
+			console.log('TESTTEST');
+			console.log($this_content.css('display'));
+			if ( $this_content.css('display') == 'none' ) {
+				console.log('if')
+				$('.payment_method_yamoney.payment_box').slideUp(250);
+				$this_content.slideDown(250);
+				$(this).closest('form').attr('action', '{% url 'checkout:process' %}');
+				
+			}
+		})
+
+
+		$('.input-radio[value=yamoney]').change(function(){
+			$this_content = $(this).siblings('div');
+			if ( $this_content.css('display') == 'none' ) {
+				$('.payment_method_paypal.payment_box').slideUp(250);
+				$this_content.slideDown(250);
+				$(this).closest('form').attr('action', 'https://money.yandex.ru/quickpay/confirm.xml');
+			}
+		})
+	})
+</script>
+
+{% endblock %}
+﻿

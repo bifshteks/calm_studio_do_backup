@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}Каталог{% endblock %}
+
+{% block body_class %}archive tax-product_cat term-all-product term-6 woocommerce woocommerce-page{% endblock %}
+
+
+{% block link %}
+<style type="text/css">#sidebar { display: none; } .woocommerce-pagination { display: none; }</style>
+{% endblock %}
+
+{% block content %}
+
+
+<div class="container">
+	<div id="container">
+		<div id="content" role="main">
+			<div class="archive_header_left">
+				<h1 class="page-title">{{ category_name }}</h1>
+	
+			</div>
+			<div class="clear"></div>
+			<ul class="products">
+				<div id="posts_cont">
+				{% for item in items %}
+					<li  class="{% cycle 'home_small_box' 'home_small_box' 'home_small_box home_small_box_last' %}">
+						<a href="{% url 'item' item.id %}" class="woocommerce-LoopProduct-link">		
+							<div>
+								<a href="{% url 'item' item.id %}">
+									<img width="360" height="360" src="{{ item.img1.url }}" class="attachment-home-small-box size-home-small-box wp-post-image" alt=""  />
+								</a>
+							</div>
+							<div class="sb_title">
+								<a href="{% url 'item' item.id %}">{{ item.title }}</a>
+							</div>
+							<div class="prod_meta">
+						<div class="prod_meta_button">
+							<p class="product woocommerce add_to_cart_inline " style="border:4px solid #ccc; padding: 12px;">	
+								<a rel="nofollow" data-quantity="1" data-product_id="{{ item.id }}" data-product_sku="Relax599" class="button product_type_simple add_to_cart_button ajax_add_to_cart{% if item.id in list_of_added_items %} added{% endif %}">В корзину</a>
+								<a href="#" class="added_to_cart" title="View cart"{% if item.id not in list_of_added_items %} style="display: none;"{% endif %}>View cart</a>
+							</p>			
+						</div>
+						<div class="sb_price" style="text-align: right">
+							<span class="price">
+							{% if item.get_discount_price == item.price %}
+								<span class="woocommerce-Price-amount amount">{{ item.price }}<span class="woocommerce-Price-currencySymbol">&#8381;</span></span>
+							{% else %}
+								<del>
+									<span class="woocommerce-Price-amount amount">
+										{{ item.price }}<span class="woocommerce-Price-currencySymbol">&#8381;</span></span>
+								</del>
+								<ins>
+									<span class="woocommerce-Price-amount amount">{{ item.get_discount_price }}<span class="woocommerce-Price-currencySymbol">&#8381;</span></span>
+								</ins>
+							{% endif %}
+							</span>
+
+						</div>
+					</div>
+						</a>
+					</li>	
+				{% endfor %}					
+					<div class="clear"></div>
+				</div>
+			</ul>
+			<div class="load_more_cont">
+				<div align="center">
+					<div class="load_more_text">
+						<a href="#" data-url="{% url 'get_more_catalog_items' %}">ЗАГРУЗИТЬ ЕЩЕ</a>
+					</div>
+				</div>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+
+	<div id="sidebar">
+		<div class="side_box">		
+			<h3 class="side_title">Последние статьи</h3>		
+			<ul>
+				{% for post in recent_posts %}
+				<li>
+					<a href="{% url 'post' post.id %}">{{ post.title }}</a>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>		
+	</div>
+</div>
+<a id="a_for_ajax_adding_cart" data-url="{% url 'cart_adding' %}" ></a>
+﻿{% endblock %}
+
+
+{% block script %}
+<script src="{% static 'js/my_adding.js' %}"></script>
+<form id="csrf-form" name="csrfmiddlewaretoken">{% csrf_token %}</form>
+<script type="text/javascript">
+$(document).ready(
+function($){
+	$('.load_more_text a').click(function() {
+		$(this).css('visibility','hidden');
+		var url = $(this).data('url');
+		var item_id = $(this).parent().parent().parent().parent().find('a.add_to_cart_button').last().data('product_id');
+		console.log(item_id)
+		console.log(url)
+
+		var data = {};
+		data.last_id = item_id;
+		console.log('last id :')
+		console.log(data['last_id'])
+		var csrf_token = $('#csrf-form [name="csrfmiddlewaretoken"]').val();
+		data["csrfmiddlewaretoken"] = csrf_token;
+		data.category_name = $('.archive_header_left h1').first().html();
+
+		$.ajax({
+				url: url,
+				type: 'POST',
+				data: data,
+				cache: true,
+				success: function (data) {
+					console.log("OK");
+					console.log(data)
+					$.each(data.item, function(k, v){
+
+						console.log('index:')
+						console.log(k)
+						console.log('prepre')
+						var index_class = ''
+						var end_div = ''
+						var span_price = ''
+						var if_it_added_class = ''
+						var if_it_added_style = ' style="display: none;"'
+
+						if ( data.items_added.indexOf(v.item_id) != -1 ) {
+							if_it_added_class = ' added';
+							if_it_added_style = '';
+						}
+						if ( k == 2 || k == 5 || k == 8 ){
+							index_class = 'home_small_box home_small_box_last'
+							end_div = '<div class="home_small_box clear"></div>'
+						} else {
+							index_class = 'home_small_box'
+							end_div = ''
+						};
+
+						
+						if (v.discount_price != v.price) {
+							console.log(v.discount_price, v.price)
+							span_price = '<del><span class="woocommerce-Price-amount amount">' + v.price + '<span class="woocommerce-Price-currencySymbol">&#8381;</span></span>	</del>	<ins><span class="woocommerce-Price-amount amount">' + v.discount_price + '<span class="woocommerce-Price-currencySymbol">&#8381;</span></span></ins>'
+						} else {
+							console.log('ELSE')
+							span_price = '<span class="woocommerce-Price-amount amount">' + v.price + '<span class="woocommerce-Price-currencySymbol">&#8381;</span></span>'
+						}
+
+
+						// console.log('pre')
+
+						var item_div = '\
+								<div  class="' + index_class + '">\
+	\
+								<a href="' + v.item_url + '" class="woocommerce-LoopProduct-link">\
+\
+								<div>\
+								<a href="' + v.item_url + '">\
+									<img width="360" height="360" src="' + v.img_url + '" class="attachment-home-small-box size-home-small-box wp-post-image" alt=""  sizes="(max-width: 360px) 100vw, 360px"></a>		\
+								</div>\
+									<div class="sb_title">\
+										<a href="' + v.item_url + '">' + v.title + '</a>\
+									</div>\
+									\
+									<div class="prod_meta">\
+										<div class="prod_meta_button">\
+											<p class="product woocommerce add_to_cart_inline " style="border:4px solid #ccc; padding: 12px;">\
+				\
+															\
+												<a rel="nofollow" data-product_id="' + v.item_id + '" class="button product_type_simple add_to_cart_button ajax_add_to_cart' + if_it_added_class + '">В корзину</a>\
+												<a href="#" class="added_to_cart" title="View cart"' + if_it_added_style + '>View cart</a>\
+											</p>			\
+										</div> <!-- //prod_meta_button -->\
+										<div class="sb_price" style="text-align: right">\
+											<span class="price">\
+											' + span_price + '\
+											</span>\
+				\
+										</div>\
+									</div> <!-- //prod_meta -->\
+								</a>\
+							</div>' + end_div;
+
+						$('#posts_cont').append(item_div);
+
+					});
+					if (data.is_it_end == false) {
+						$('.load_more_text a').css('visibility','visible');
+					}
+				},
+				error: function(){
+					console.log("error");
+				}
+			});
+
+		return false;
+	});
+});
+</script>	
+{% endblock %}
+
+
+
+
+
